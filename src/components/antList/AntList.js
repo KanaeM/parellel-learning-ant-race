@@ -9,6 +9,10 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
 export default function AntList(props) {
+  const {ants} = props;
+  ants.sort(function (a, b) {
+    return a.winLikelihood - b.winLikelihood;
+  });
 
   return (
     <TableContainer component={Paper}>
@@ -23,7 +27,7 @@ export default function AntList(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {props.ants.map((row) => (
+          {ants.map((row) => (
             <TableRow
               key={row.name}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}

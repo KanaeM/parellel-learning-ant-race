@@ -93,7 +93,9 @@ export function AntRace() {
       <RaceStatus status={status} />
 
       {(displayList || startRace) && (
-        <AntList ants={ants} />
+        <AntList
+          ants={ants}
+        />
       )}
     </div>
   );
