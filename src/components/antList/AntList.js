@@ -11,8 +11,14 @@ import Paper from '@mui/material/Paper';
 export default function AntList(props) {
   const {ants} = props;
   ants.sort(function (a, b) {
-    return a.winLikelihood - b.winLikelihood;
+    return (a.winLikelihood || a) - (b.winLikelihood || b);
   });
+
+  const statusMessage = {
+    default: 'Not Yet Run',
+    start: 'In Progress',
+    end: 'All Calculated'
+  };
 
   return (
     <TableContainer component={Paper}>
@@ -23,7 +29,7 @@ export default function AntList(props) {
             <TableCell align="right">Length</TableCell>
             <TableCell align="right">Color</TableCell>
             <TableCell align="right">Weight</TableCell>
-            <TableCell align="right">Win Chance</TableCell>
+            <TableCell align="right">Status</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -38,8 +44,9 @@ export default function AntList(props) {
               <TableCell align="right">{row.length}</TableCell>
               <TableCell align="right">{row.color}</TableCell>
               <TableCell align="right">{row.weight}</TableCell>
+              {/* <TableCell align="right">{row.winLikelihood || 'N/A'}%</TableCell> */}
               <TableCell align="right">
-                {row.winLikelihood || 'N/A'}%
+                {statusMessage[row.status] || statusMessage.start}
               </TableCell>
             </TableRow>
           ))}

@@ -1,4 +1,5 @@
 import React from 'react';
+import './RaceStatus.scss';
 
 export default function RaceStatus(props) {
   const {status} = props;
@@ -9,7 +10,7 @@ export default function RaceStatus(props) {
   };
 
   return (
-    <div>
+    <div className='ant-race__status'>
       <span>{statusMessage[status]}</span>
     </div>
   );
