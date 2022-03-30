@@ -9,7 +9,6 @@ export function AntRace() {
   const [displayList, setDisplayList] = useState(false);
   const [startRace, setStartRace] = useState(false);
   const [status, setStatus] = useState('default');
-  let newAntData = ants;
  
   useEffect(() => {
     getAntData();
@@ -37,6 +36,8 @@ export function AntRace() {
   }
 
   async function setWinLikelihood() {
+    const newRaceData = [...ants]; 
+
     const setPromise = (ant) => {
       const calculator = generateAntWinLikelihoodCalculator();
       return new Promise((resolve, reject) => {
@@ -47,13 +48,14 @@ export function AntRace() {
     };
 
     const antPromises = ants.map(async (ant, i) => {
-      let newAntData = ant;
-      newAntData.winLikelihood = await setPromise(ant);
-      return newAntData;
+      let race = ant
+      race.winLikelihood = await setPromise(ant);
+      newRaceData[i].winLikelihood = race.winLikelihood;
+      setAnts(newRaceData);
+      return race;
     });
 
     await Promise.all(antPromises).then((data) => {
-      newAntData = data;
       setStatus('end')
     });
   }
@@ -90,7 +92,9 @@ export function AntRace() {
 
       <RaceStatus status={status} />
 
-      {(displayList || startRace) && <AntList ants={newAntData} />}
+      {(displayList || startRace) && (
+        <AntList ants={ants} />
+      )}
     </div>
   );
 } 

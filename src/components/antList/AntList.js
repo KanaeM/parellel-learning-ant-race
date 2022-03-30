@@ -19,6 +19,7 @@ export default function AntList(props) {
             <TableCell align="right">Length</TableCell>
             <TableCell align="right">Color</TableCell>
             <TableCell align="right">Weight</TableCell>
+            <TableCell align="right">Win Chance</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -33,10 +34,13 @@ export default function AntList(props) {
               <TableCell align="right">{row.length}</TableCell>
               <TableCell align="right">{row.color}</TableCell>
               <TableCell align="right">{row.weight}</TableCell>
+              <TableCell align="right">
+                {row.winLikelihood || 'N/A'}%
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
     </TableContainer>
-  )
+  );
 }
