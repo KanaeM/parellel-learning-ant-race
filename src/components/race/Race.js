@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import AntList from '../antList/AntList';
+import RaceStatus from '../raceStatus/RaceStatus';
 import Button from '@mui/material/Button';
 import './Race.scss';
 
@@ -7,7 +8,8 @@ export function AntRace() {
   const [ants, setAnts] = useState([]);
   const [displayList, setDisplayList] = useState(false);
   const [startRace, setStartRace] = useState(false);
-  let newAntData = [];
+  const [status, setStatus] = useState('default');
+  let newAntData = ants;
  
   useEffect(() => {
     getAntData();
@@ -35,7 +37,7 @@ export function AntRace() {
   }
 
   async function setWinLikelihood() {
-    const setPromise = () => {
+    const setPromise = (ant) => {
       const calculator = generateAntWinLikelihoodCalculator();
       return new Promise((resolve, reject) => {
         calculator(function (val) {
@@ -45,26 +47,26 @@ export function AntRace() {
     };
 
     const antPromises = ants.map(async (ant, i) => {
-      const newAntData = ant;
-      newAntData.winLikelihood = await setPromise();
+      let newAntData = ant;
+      newAntData.winLikelihood = await setPromise(ant);
       return newAntData;
     });
 
     await Promise.all(antPromises).then((data) => {
-      console.log('data', data)
       newAntData = data;
+      setStatus('end')
     });
   }
 
-
   async function initRace() {
+    setStartRace(true);
+    setStatus('start');
     await setWinLikelihood();
-
   }
 
   return (
     <div className="ant-race">
-      <div className='ant-race__button-wrapper'>
+      <div className="ant-race__button-wrapper">
         <Button
           className="ant-race__button"
           variant="outlined"
@@ -77,7 +79,7 @@ export function AntRace() {
         <Button
           className="ant-race__button"
           variant="outlined"
-          disabled={ants.length <= 0}
+          disabled={ants.length <= 0 || status === 'start'}
           onClick={() => {
             initRace();
           }}
@@ -86,7 +88,9 @@ export function AntRace() {
         </Button>
       </div>
 
-      {displayList && <AntList ants={ants} />}
+      <RaceStatus status={status} />
+
+      {(displayList || startRace) && <AntList ants={newAntData} />}
     </div>
   );
 } 
