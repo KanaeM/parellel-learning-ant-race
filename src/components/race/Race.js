@@ -7,6 +7,7 @@ export function AntRace() {
   const [ants, setAnts] = useState([]);
   const [displayList, setDisplayList] = useState(false);
   const [startRace, setStartRace] = useState(false);
+  let newAntData = [];
  
   useEffect(() => {
     getAntData();
@@ -33,8 +34,32 @@ export function AntRace() {
     }
   }
 
+  async function setWinLikelihood() {
+    const setPromise = () => {
+      const calculator = generateAntWinLikelihoodCalculator();
+      return new Promise((resolve, reject) => {
+        calculator(function (val) {
+          resolve(val);
+        });
+      });
+    };
 
-  function initRace() {
+    const antPromises = ants.map(async (ant, i) => {
+      const newAntData = ant;
+      newAntData.winLikelihood = await setPromise();
+      return newAntData;
+    });
+
+    await Promise.all(antPromises).then((data) => {
+      console.log('data', data)
+      newAntData = data;
+    });
+  }
+
+
+  async function initRace() {
+    await setWinLikelihood();
+
   }
 
   return (
